@@ -1,4 +1,4 @@
-module autoEmail
+module github.com/mahaonan001/autoEmail
 
 go 1.22.0
 
