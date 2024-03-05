@@ -10,7 +10,6 @@ import (
 	"regexp"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/jordan-wright/email"
 )
 
@@ -46,7 +45,7 @@ func Rename(file *multipart.FileHeader, path_file string, ext_allowed map[string
 	return dst, nil
 }
 
-func SendMail(c *gin.Context, Toemail, smtpUser, smtpPassword, title string) (string, error) {
+func SendMail(Toemail, smtpUser, smtpPassword, title string) (string, error) {
 	smtpHost := "smtp.qq.com"             // SMTP服务器地址
 	smtpPort := "587"                     // SMTP服务器端口
 	toUserEmail := Toemail                // 接收者邮箱地址
