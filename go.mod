@@ -1,4 +1,4 @@
-module autoEail
+module autoEmail
 
 go 1.22.0
 
