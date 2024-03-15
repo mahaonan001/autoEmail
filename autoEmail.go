@@ -49,7 +49,7 @@ func Rename(file *multipart.FileHeader, dreaming_name, path_file string, ext_all
 	}
 	return dst, nil
 }
-func CreateDB(databaseName, Username, Password, port int) {
+func CreateDB(databaseName, Username, Password string, port int) {
 	if port == 0 {
 		port = 3306
 	}
