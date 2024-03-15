@@ -11,10 +11,12 @@ import (
 	"time"
 
 	"github.com/jordan-wright/email"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 // 生成随机字符串
-func RandomString(l int, Inner string) string {
+func randomString(l int, Inner string) string {
 	var letters = []byte(Inner)
 	var result = make([]byte, l)
 	rand.NewSource(time.Now().UnixNano())
@@ -25,12 +27,15 @@ func RandomString(l int, Inner string) string {
 }
 
 // 重命名文件
-func Rename(file *multipart.FileHeader, path_file string, ext_allowed map[string]bool) (string, error) {
+func Rename(file *multipart.FileHeader, dreaming_name, path_file string, ext_allowed map[string]bool) (string, error) {
 	var dst string
 	oldname := file.Filename
 	ext := path.Ext(oldname)
 	if !ext_allowed[ext] {
 		return "", fmt.Errorf("error extention name") // 文件扩展名不允许
+	}
+	if dreaming_name != "" {
+		oldname = dreaming_name
 	}
 	for {
 		times := 0
@@ -44,12 +49,30 @@ func Rename(file *multipart.FileHeader, path_file string, ext_allowed map[string
 	}
 	return dst, nil
 }
-
+func CreateDB(databaseName, Username, Password, port int) {
+	if port == 0 {
+		port = 3306
+	}
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%v)/%s?charset=%s&&parseTime=True&loc=Local",
+		Username,
+		Password,
+		"127.0.0.1",
+		port,
+		"mysql",
+		"utf8",
+	)
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	if err != nil {
+		panic(err)
+	}
+	sqlStatement := fmt.Sprintf("CREATE DATABASE IF NOT EXISTS `%s`", databaseName)
+	db.Exec(sqlStatement)
+}
 func SendMail(Toemail, smtpUser, smtpPassword, title string) (string, error) {
 	smtpHost := "smtp.qq.com"             // SMTP服务器地址
 	smtpPort := "587"                     // SMTP服务器端口
 	toUserEmail := Toemail                // 接收者邮箱地址
-	code := RandomString(6, "0123456789") // 验证码
+	code := randomString(6, "0123456789") // 验证码
 	if !IsEmailLegal(toUserEmail) {
 		return "", fmt.Errorf("邮箱格式错误")
 	}
