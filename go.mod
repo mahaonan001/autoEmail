@@ -1,4 +1,4 @@
-module github.com/mahaonan001/autoEmail
+module github.com/mahaonan001/easyX
 
 go 1.22.0
 
