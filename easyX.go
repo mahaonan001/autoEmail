@@ -49,24 +49,24 @@ func Rename(file *multipart.FileHeader, dreaming_name, path_file string, ext_all
 	}
 	return dst, nil
 }
-func CreateDB(databaseName, Username, Password string, port int) {
-	if port == 0 {
-		port = 3306
-	}
+func CreateDB(databaseName, Username, Password, IP string, port int) error {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%v)/%s?charset=%s&&parseTime=True&loc=Local",
 		Username,
 		Password,
-		"127.0.0.1",
+		IP,
 		port,
 		"mysql",
 		"utf8",
 	)
+	fmt.Println(dsn)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
+		return err
 	}
 	sqlStatement := fmt.Sprintf("CREATE DATABASE IF NOT EXISTS `%s`", databaseName)
 	db.Exec(sqlStatement)
+	return nil
 }
 func SendMail(Toemail, smtpUser, smtpPassword, title string) (string, error) {
 	smtpHost := "smtp.qq.com"             // SMTP服务器地址
